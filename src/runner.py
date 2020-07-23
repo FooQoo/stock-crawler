@@ -37,7 +37,7 @@ class Runner:
         google driveのAPIのインスタンス
     """
     YEARS = ["2020", "2019", "2018"]
-    CSV_HEADER = "code,date,open,high,low,closing,volume,closed_adj\n"
+    CSV_HEADER = "code,date,open,high,low,closing,volume,closed_adj"
 
     def __init__(self, cached_host: str, cached_user: str, cached_password: str, filepath: str, drivepath: str, service_account_key_path: str, stock_api_path: str):
         """
