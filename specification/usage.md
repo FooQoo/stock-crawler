@@ -6,11 +6,20 @@ $ gcloud beta functions deploy stock-clawler  --entry-point=main --trigger-topic
 ```
 
 ## スケジュール
+- 毎週日曜日に毎分実行
 ```bash
-gcloud scheduler jobs create pubsub feeder \
+# 新規作成
+$ gcloud scheduler jobs create pubsub feeder \
  --topic stock \
  --message-body='fetch info' \
- --schedule '* * * * *' \
+ --schedule '* * * * 5,6' \
+ --time-zone='Asia/Tokyo'
+
+ # 更新
+$ gcloud scheduler jobs update pubsub feeder \
+ --topic stock \
+ --message-body='fetch info' \
+ --schedule '* * * * 5,6' \
  --time-zone='Asia/Tokyo'
 ```
 ## 依存関係
