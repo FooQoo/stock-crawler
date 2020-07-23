@@ -23,7 +23,7 @@ $ poetry export -f requirements.txt --without-hashes > src/requirements.txt
 ## データ取得テスト方法
 
 ```bash
-$ curl -X POST -d "code=1301&year=2020" "https://kabuoji3.com/stock/file.php" -o 1301_2020.csv
+$ curl -X POST -d "code=1301&year=2020" "path" -o 1301_2020.csv
 ```
 
 ## gcp仕様
