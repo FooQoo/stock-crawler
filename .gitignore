@@ -4,3 +4,4 @@ service-account-key.json
 env.yaml
 .env
 .DS_Store
+data/*.csv
