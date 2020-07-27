@@ -24,8 +24,9 @@ def main(event, context):
     stocklist_path = environ.get('STOCKLIST_PATH')
     service_account_key_path = environ.get('SERVICE_ACCOUNT_KEY_PATH')
     stock_api_path = environ.get('STOCK_API_PATH')
+    sheet_id = environ.get('SHEET_ID')
     runner = Runner(cached_host, cached_username, cached_password,
-                    stocklist_path, drive_key, service_account_key_path, stock_api_path)
+                    stocklist_path, drive_key, service_account_key_path, stock_api_path, sheet_id)
     runner.start()
 
 
