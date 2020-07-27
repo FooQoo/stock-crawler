@@ -9,5 +9,5 @@
   "python.linting.flake8Args": ["--ignore=E501"],
   "editor.tabSize": 4,
   "editor.insertSpaces": true,
-  "prettier.disableLanguages": ["markdown"]
+  "prettier.disableLanguages": ["markdown", "shellscript"]
 }

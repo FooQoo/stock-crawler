@@ -1,7 +1,7 @@
 #!/bin/bash
 
-cd src
+cd src || exit
 
 python main.py
 
-cd -
+cd - || exit

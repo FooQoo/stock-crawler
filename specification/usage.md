@@ -39,3 +39,8 @@ $ curl -X POST -d "code=1301&year=2020" "path" -o 1301_2020.csv
 ```
 --timeout: max 540sec
 ```
+
+## 銘柄コードのファイルマージ
+```bash
+$ bash etc/mergeCsv.sh -d ~/stock -o data/stock.csv 
+```

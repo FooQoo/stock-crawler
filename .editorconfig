@@ -1,0 +1,4 @@
+# editorconfig
+[*.sh]
+indent_style = space # インデントをスペースで統一
+indent_size = 2      # インデントサイズを2で統一
