@@ -134,14 +134,14 @@ class Runner:
         df['five_stage'] = (df.short < df.long) & (
             df.short >= df.middle) & (df.middle < df.long)
         df['stage'] = df.four_stage * 4 + df.five_stage * 5
-        df = df.dropna().reset_index(drop=True)
+        df = df.dropna()
         df['purchase_sign'] = df.stage.rolling(3).apply(
             lambda x: list(x) == [4, 5, 5])
 
         cells = []
         for last_day in df.tail(1).itertuples():
             if last_day.purchase_sign:
-                cells.append([last_day.code, last_day.closed_adj,
+                cells.append([last_day.Index.strftime('%Y-%m-%d'),
                               last_day.short, last_day.middle, last_day.long])
 
         if len(cells) > 0:
