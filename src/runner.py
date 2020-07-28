@@ -141,7 +141,7 @@ class Runner:
         cells = []
         for last_day in df.tail(1).itertuples():
             if last_day.purchase_sign:
-                cells.append([last_day.Index.strftime('%Y-%m-%d'),
+                cells.append([last_day.Index.strftime('%Y-%m-%d'), last_day.code, last_day.closed_adj,
                               last_day.short, last_day.middle, last_day.long])
 
         if len(cells) > 0:
