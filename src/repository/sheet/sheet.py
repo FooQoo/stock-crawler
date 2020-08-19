@@ -44,7 +44,7 @@ class SheetAPI:
 
     def append(self, cells: list):
         """
-        google driveへのファイルアップロード
+        google spread sheetに行追加
 
         Parameters
         ----------

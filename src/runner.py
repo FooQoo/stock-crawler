@@ -41,6 +41,10 @@ class Runner:
     """
     YEARS = ["2020", "2019", "2018"]
     CSV_HEADER = "code,date,open,high,low,closing,volume,closed_adj"
+    STAGE_TRANSITION = [4, 4, 5]
+    SHORT_TERM = 5
+    MIDDLE_TERM = 25
+    LONG_TERM = 75
 
     def __init__(
             self,
@@ -76,19 +80,25 @@ class Runner:
         """
         self.memcache_api = MemcachedAPI(
             cached_host, cached_user, cached_password)
-        self.stock_list_api = StockListAPI(filepath)
+        self.stock_list_api = StockListAPI(filepath, filter_mode=True)
         self.stock_api = StockAPI(stock_api_path)
         self.drive_api = GoogleDriveAPI(drivepath, service_account_key_path)
         self.sheet_api = SheetAPI(service_account_key_path, sheet_id)
 
-    def start(self):
+    def start(self, insert_flag=True):
         """
         タスクの実行
+
+        Parameters
+        ----------
+        insert_flag : bool, optional
+            google driveへの保存実行フラグ, by default True
         """
         try:
             code = self.__get_stock_code()
             csv = self.__fetch_stock(code)
-            self.__drive_insert(csv, code)
+            if insert_flag:
+                self.__drive_insert(csv, code)
             self.__append_purchace_sign(csv)
             self.memcache_api.set_stock_code(code)
         except Exception:
@@ -124,11 +134,13 @@ class Runner:
         csv : str
             取得したcsvファイル
         """
+
+        # 買いシグナルを計算
         df = pd.read_csv(StringIO(csv), index_col='date',
                          parse_dates=True).sort_index()
-        df['short'] = df.closed_adj.rolling(5).mean().round(1)
-        df['middle'] = df.closed_adj.rolling(25).mean().round(1)
-        df['long'] = df.closed_adj.rolling(75).mean().round(1)
+        df['short'] = df.closed_adj.rolling(self.SHORT_TERM).mean().round(1)
+        df['middle'] = df.closed_adj.rolling(self.MIDDLE_TERM).mean().round(1)
+        df['long'] = df.closed_adj.rolling(self.LONG_TERM).mean().round(1)
         df['four_stage'] = (df.short < df.long) & (
             df.short < df.middle) & (df.middle < df.long)
         df['five_stage'] = (df.short < df.long) & (
@@ -136,13 +148,27 @@ class Runner:
         df['stage'] = df.four_stage * 4 + df.five_stage * 5
         df = df.dropna()
         df['purchase_sign'] = df.stage.rolling(3).apply(
-            lambda x: list(x) == [4, 5, 5])
+            lambda x: list(x) == self.STAGE_TRANSITION)
 
         cells = []
         for last_day in df.tail(1).itertuples():
             if last_day.purchase_sign:
-                cells.append([last_day.Index.strftime('%Y-%m-%d'), last_day.code, last_day.closed_adj,
-                              last_day.short, last_day.middle, last_day.long])
+                # 銘柄情報を取得する
+                info = self.stock_list_api.get_stock_info_by_code(
+                    last_day.code)
+
+                cel = [
+                    last_day.Index.strftime('%Y-%m-%d'),
+                    last_day.code,
+                    info[self.stock_list_api.CODE_NAME],
+                    info[self.stock_list_api.BIZ_TYPE],
+                    last_day.closed_adj,
+                    last_day.short,
+                    last_day.middle,
+                    last_day.long
+                ]
+
+                cells.append(cel)
 
         if len(cells) > 0:
             self.sheet_api.append(cells)
