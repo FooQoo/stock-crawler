@@ -27,7 +27,7 @@ def main(event, context):
     sheet_id = environ.get('SHEET_ID')
     runner = Runner(cached_host, cached_username, cached_password,
                     stocklist_path, drive_key, service_account_key_path, stock_api_path, sheet_id)
-    runner.start()
+    runner.start(insert_flag=False)
 
 
 if __name__ == '__main__':
