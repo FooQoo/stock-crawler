@@ -1,4 +1,4 @@
-name: CI
+name: Google Functions
 
 on:
   push:
@@ -9,27 +9,39 @@ env:
   FUNCTION_ENV: ${{ secrets.FUNCTION_ENV }}
   GCP_SA_EMAIL: ${{ secrets.GCP_SA_EMAIL }}
   GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+  GCP_SA_PROJECT_ID: ${{ secrets.GCP_SA_PROJECT_ID }}
 
 jobs:
   deploy:
     name: Deploy Functions
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
 
     steps:
       - uses: actions/checkout@v2
 
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install
+          poetry export -f requirements.txt --without-hashes > src/requirements.txt
+
       - name: GCP Authenticate
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
-          version: "273.0.0"
+          version: "290.0.1"
           service_account_email: ${{ secrets.GCP_SA_EMAIL }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
 
       - name: deploy
         run: |
-          echo $GCP_SA_KEY | base64 -d > ./gcloud-service-key.json
           echo $FUNCTION_ENV | base64 -d > env.yaml
-          echo $GCP_SA_EMAIL | gcloud auth activate-service-account --key-file ./gcloud-service-key.json
-          gcloud beta functions deploy  --quiet stcok-clawler --source ./src/ --entry-point=main --trigger-topic=stock --env-vars-file=env.yaml --runtime=python38 --timeout=300
-        env:
-          CI: true
+          gcloud functions deploy stock-clawler --project $GCP_SA_PROJECT_ID --quiet --entry-point=main --trigger-topic=stock --env-vars-file=env.yaml --source=src --runtime=python38 --timeout=300
