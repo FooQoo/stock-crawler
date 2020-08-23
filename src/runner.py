@@ -149,6 +149,8 @@ class Runner:
         df = df.dropna()
         df['purchase_sign'] = df.stage.rolling(3).apply(
             lambda x: list(x) == self.STAGE_TRANSITION)
+        df['dod'] = df.closed_adj.pct_change().round(3)
+        df['diff'] = df.closed_adj.diff()
 
         cells = []
         for last_day in df.tail(1).itertuples():
@@ -165,7 +167,9 @@ class Runner:
                     last_day.closed_adj,
                     last_day.short,
                     last_day.middle,
-                    last_day.long
+                    last_day.long,
+                    last_day.dod,
+                    last_day.diff
                 ]
 
                 cells.append(cel)
