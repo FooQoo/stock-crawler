@@ -1,4 +1,4 @@
-name: CI
+name: Google Functions
 
 on:
   push:
@@ -28,9 +28,5 @@ jobs:
 
       - name: deploy
         run: |
-          echo $GCP_SA_KEY | base64 -d > ./gcloud-service-key.json
           echo $FUNCTION_ENV | base64 -d > env.yaml
-          echo $GCP_SA_EMAIL | gcloud auth activate-service-account --key-file ./gcloud-service-key.json
           gcloud functions deploy stock-clawler --project $GCP_SA_PROJECT_ID --quiet --entry-point=main --trigger-topic=stock --env-vars-file=env.yaml --source=src --runtime=python38 --timeout=300
-        env:
-          CI: true
