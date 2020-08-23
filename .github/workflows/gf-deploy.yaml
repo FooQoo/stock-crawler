@@ -1,0 +1,26 @@
+name: Deploy Cloud Functions(Dev)
+
+on:
+  push:
+    branches:
+      - dev
+
+env:
+  FUNCTION_ENV: ${{ secrets.FUNCTION_ENV }}
+
+jobs:
+  build-deploy:
+    name: Deploy Functions
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCP_SA_PROJECT_ID }}
+          service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+      - name: Deploy Functions
+        run: |
+          echo $FUNCTION_ENV | base64 -d > env.yaml
+          gcloud functions deploy stcok-clawler --source ./src/ --entry-point=main --trigger-topic=stock --env-vars-file=env.yaml --runtime=python38 --timeout=300
