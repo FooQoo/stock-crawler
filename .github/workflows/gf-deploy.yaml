@@ -38,10 +38,11 @@ jobs:
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
           version: "290.0.1"
-          service_account_email: ${{ secrets.GCP_SA_EMAIL }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          service_account_email: $GCP_SA_EMAIL
+          service_account_key: $GCP_SA_KEY
 
       - name: deploy
         run: |
           echo $FUNCTION_ENV | base64 -d > env.yaml
-          gcloud functions deploy stock-clawler --project $GCP_SA_PROJECT_ID --quiet --entry-point=main --trigger-topic=stock --env-vars-file=env.yaml --source=src --runtime=python38 --timeout=300
+          echo $GCP_SA_KEY | base64 -d > src/resouces/credential.json
+          gcloud functions deploy stock-crawler --project $GCP_SA_PROJECT_ID --quiet --entry-point=main --trigger-topic=stock --env-vars-file=env.yaml --source=src --runtime=python38 --timeout=300

@@ -1,28 +1,28 @@
 [tool.poetry]
-name = "stock-clawler"
-version = "1.0.0"
-description = "The batch system for clawling stocks"
 authors = ["FooQoo <horseshoes.buzz.17@gmail.com>"]
+description = "The batch system for clawling stocks"
 license = "MIT"
+name = "stock-crawler"
+version = "1.0.0"
 
 [tool.poetry.dependencies]
-python = "^3.8"
-requests = "pandas"
-pandas = "^1.0.5"
-python-dotenv = "^0.14.0"
 google-api-python-client = "^1.10.0"
-oauth2client = "^4.1.3"
-tqdm = "^4.48.0"
-logger = "^1.4"
-python-binary-memcached = "^0.29.0"
 jupyter = "^1.0.0"
+logger = "^1.4"
 matplotlib = "^3.3.0"
+oauth2client = "^4.1.3"
+pandas = "^1.0.5"
+python = "^3.8"
+python-binary-memcached = "^0.29.0"
+python-dotenv = "^0.14.0"
+requests = "pandas"
 seaborn = "^0.10.1"
+tqdm = "^4.48.0"
 
 [tool.poetry.dev-dependencies]
-flake8 = "^3.8.3"
 autopep8 = "^1.5.3"
+flake8 = "^3.8.3"
 
 [build-system]
-requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
+requires = ["poetry>=0.12"]

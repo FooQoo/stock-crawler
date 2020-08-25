@@ -2,7 +2,7 @@
 ## デプロイ
 
 ```bash
-$ gcloud beta functions deploy stock-clawler  --entry-point=main --trigger-topic=stock --env-vars-file=env.yaml --source=src --runtime=python38 --timeout=300
+$ gcloud beta functions deploy stock-crawler  --entry-point=main --trigger-topic=stock --env-vars-file=env.yaml --source=src --runtime=python38 --timeout=300
 ```
 
 ## スケジュール
