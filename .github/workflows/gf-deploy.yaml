@@ -3,7 +3,7 @@ name: Google Functions
 on:
   push:
     branches:
-      - master
+      - feature/add-credential
 
 env:
   FUNCTION_ENV: ${{ secrets.FUNCTION_ENV }}
