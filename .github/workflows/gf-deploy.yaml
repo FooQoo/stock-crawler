@@ -44,4 +44,5 @@ jobs:
       - name: deploy
         run: |
           echo $FUNCTION_ENV | base64 -d > env.yaml
-          gcloud functions deploy stock-clawler --project $GCP_SA_PROJECT_ID --quiet --entry-point=main --trigger-topic=stock --env-vars-file=env.yaml --source=src --runtime=python38 --timeout=300
+          echo $GCP_SA_KEY | base64 -d > src/resources/credential.json
+          gcloud functions deploy stock-crawler --project $GCP_SA_PROJECT_ID --quiet --entry-point=main --trigger-topic=stock --env-vars-file=env.yaml --source=src --runtime=python38 --timeout=300
